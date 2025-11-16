@@ -5,6 +5,7 @@ import com.example.Integradora.Repositories.TicketRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -20,5 +21,23 @@ public class TicketService {
         return ticketRepository.findById(id);
     }
 
+    public List<Ticket> findAll() {
+        return ticketRepository.findAll();
+    }
 
+    public Ticket update(Ticket ticket) {
+        return ticketRepository.save(ticket);
+    }
+
+    public void deleteById(Long id) {
+        ticketRepository.deleteById(id);
+    }
+
+    public void delete(Ticket ticket) {
+        ticketRepository.delete(ticket);
+    }
+
+    public boolean existsById(Long id) {
+        return ticketRepository.existsById(id);
+    }
 }

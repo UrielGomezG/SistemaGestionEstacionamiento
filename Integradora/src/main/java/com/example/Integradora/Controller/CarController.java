@@ -2,7 +2,6 @@ package com.example.Integradora.Controller;
 
 import com.example.Integradora.Model.Car;
 import com.example.Integradora.Service.CarService;
-import com.example.Integradora.Service.ParkingLotService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,9 +19,6 @@ public class CarController {
     
     @Autowired
     private CarService carService;
-    
-    @Autowired
-    private ParkingLotService parkingLotService;
 
     /**
      * Obtiene todos los autos de la base de datos
@@ -30,15 +26,14 @@ public class CarController {
      */
     @GetMapping
     public ResponseEntity<?> getAllCars() {
+        Map<String, Object> response = new HashMap<>();
         try {
             List<Car> cars = carService.findAll();
-            Map<String, Object> response = new HashMap<>();
             response.put("success", true);
             response.put("cars", cars);
             response.put("count", cars.size());
             return ResponseEntity.ok(response);
         } catch (Exception e) {
-            Map<String, Object> response = new HashMap<>();
             response.put("success", false);
             response.put("message", "Error al obtener autos: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
