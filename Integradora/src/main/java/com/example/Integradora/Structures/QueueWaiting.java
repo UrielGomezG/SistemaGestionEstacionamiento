@@ -48,4 +48,12 @@ public class QueueWaiting<T> {
     public boolean isEmpty() {
         return head == null;
     }
+    
+    public int getSize() {
+        return size;
+    }
+    
+    public Node<T> getHead() {
+        return head;
+    }
 }

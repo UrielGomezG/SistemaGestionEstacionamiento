@@ -38,21 +38,21 @@ public class ParkingLotList<T> {
         if(head.getData().equals(data)){
             removed = head.getData();
             head = head.getNext();
-            if(isEmpty()){tail = null;}
             size--;
+            if(isEmpty()){tail = null;}
             return removed;
         }
 
-        Node<T> nodeToRemove = head;
-        while (nodeToRemove.getNext() != null) {
-            if (nodeToRemove.getNext().getData().equals(data)) {
-                removed = nodeToRemove.getNext().getData();
-                nodeToRemove = nodeToRemove.getNext().getNext();
-                if (nodeToRemove.getNext() == null) { tail = null; }
+        Node<T> current = head;
+        while (current.getNext() != null) {
+            if (current.getNext().getData().equals(data)) {
+                removed = current.getNext().getData();
+                if (current.getNext() == tail) { tail = current; }
+                current.setNext(current.getNext().getNext());
                 size--;
                 return removed;
             }
-            nodeToRemove = nodeToRemove.getNext();
+            current = current.getNext();
         }
         return null;
     }
@@ -63,6 +63,10 @@ public class ParkingLotList<T> {
 
     public T getData(T data) {
         if(isEmpty()){ return null; }
+
+        if(head.getData().equals(data)){
+            return head.getData();
+        }
 
         Node<T> current = head;
         while(current.getNext() != null){

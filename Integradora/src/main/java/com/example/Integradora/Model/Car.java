@@ -55,4 +55,17 @@ public class Car {
     public LocalDateTime getExitTime() { return exitTime; }
 
     public void setExitTime(LocalDateTime exitTime) { this.exitTime = exitTime; }
+    
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Car car = (Car) obj;
+        return plate != null && plate.equals(car.plate);
+    }
+    
+    @Override
+    public int hashCode() {
+        return plate != null ? plate.hashCode() : 0;
+    }
 }
