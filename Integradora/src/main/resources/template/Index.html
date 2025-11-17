@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Sistema de Estacionamiento</title>
+    <link rel="stylesheet" href="/Integradora/src/main/resources/static/css/style.css">
+</head>
+<body>
+    <h1>Sistema de Estacionamiento</h1>
+
+    <div class="section">
+        <h2>Registrar Entrada</h2>
+        <input type="text" id="plateEntry" placeholder="Placa">
+        <input type="text" id="makeEntry" placeholder="Marca">
+        <input type="text" id="modelEntry" placeholder="Modelo">
+        <input type="text" id="colorEntry" placeholder="Color">
+        <button onclick="registerEntry()">Registrar Entrada</button>
+        <p id="messageEntry"></p>
+    </div>
+
+    <div class="section">
+        <h2>Registrar Salida</h2>
+        <input type="text" id="plateExit" placeholder="Placa">
+        <button onclick="registerExit()">Registrar Salida</button>
+        <p id="messageExit"></p>
+    </div>
+
+    <div class="section">
+        <h2>Estado del Estacionamiento</h2>
+        <button onclick="loadParking()">Actualizar Estado</button>
+
+        <h3>Autos dentro del estacionamiento</h3>
+        <ul id="parkingList"></ul>
+
+        <h3>Autos en cola de espera</h3>
+        <ul id="waitingList"></ul>
+
+        <h3>Historial de autos salidos (LIFO)</h3>
+        <ul id="historyList"></ul>
+    </div>
+
+    <script>
+        const baseURL = "http://localhost:8080";
+
+        async function registerEntry() {
+            const plate = document.getElementById("plateEntry").value;
+            const make = document.getElementById("makeEntry").value;
+            const model = document.getElementById("modelEntry").value;
+            const color = document.getElementById("colorEntry").value;
+
+            const body = { plate, make, model, color };
+
+            try {
+                const res = await fetch(`${baseURL}/cars/entry`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(body)
+                });
+                const data = await res.json();
+                document.getElementById("messageEntry").textContent = data.message;
+                document.getElementById("messageEntry").className = data.success ? "success" : "error";
+                loadParking();
+            } catch (err) {
+                document.getElementById("messageEntry").textContent = "Error de conexión";
+                document.getElementById("messageEntry").className = "error";
+            }
+        }
+
+        async function registerExit() {
+            const plate = document.getElementById("plateExit").value;
+            try {
+                const res = await fetch(`${baseURL}/cars/exit/${plate}`, { method: "POST" });
+                const data = await res.json();
+                document.getElementById("messageExit").textContent = data.message;
+                document.getElementById("messageExit").className = data.success ? "success" : "error";
+                loadParking();
+            } catch (err) {
+                document.getElementById("messageExit").textContent = "Error de conexión";
+                document.getElementById("messageExit").className = "error";
+            }
+        }
+
+        async function loadParking() {
+            try {
+                const parkingRes = await fetch(`${baseURL}/cars/parking`);
+                const parkingData = await parkingRes.json();
+                const parkingList = document.getElementById("parkingList");
+                parkingList.innerHTML = "";
+                parkingData.cars.forEach(car => {
+                    const li = document.createElement("li");
+                    li.textContent = `${car.plate} - ${car.make} ${car.model} (${car.color})`;
+                    parkingList.appendChild(li);
+                });
+
+                const waitingRes = await fetch(`${baseURL}/cars/waiting`);
+                const waitingData = await waitingRes.json();
+                const waitingList = document.getElementById("waitingList");
+                waitingList.innerHTML = "";
+                waitingData.cars.forEach(car => {
+                    const li = document.createElement("li");
+                    li.textContent = `${car.plate} - ${car.make} ${car.model} (${car.color})`;
+                    waitingList.appendChild(li);
+                });
+
+                const historyRes = await fetch(`${baseURL}/cars/history`);
+                const historyData = await historyRes.json();
+                const historyList = document.getElementById("historyList");
+                historyList.innerHTML = "";
+                historyData.history.forEach(car => {
+                    const li = document.createElement("li");
+                    li.textContent = `${car.plate} - ${car.make} ${car.model} (${car.color})`;
+                    historyList.appendChild(li);
+                });
+
+            } catch (err) {
+                console.log("Error al cargar datos:", err);
+            }
+        }
+
+        window.onload = loadParking;
+</script>
+</body>
+</html>
