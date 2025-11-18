@@ -36,7 +36,7 @@ public class FeeController {
             return ResponseEntity.ok(response);
         } catch (Exception e){
             response.put("success", false);
-            response.put("message", "Error al obtener tarifas" +  e.getMessage());
+            response.put("message", "Error al obtener las tarifas");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }

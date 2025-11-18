@@ -17,8 +17,12 @@ public class Car {
     private String color;
     private LocalDateTime entryTime;
     private LocalDateTime exitTime;
+    @Column(nullable = false)
+    private Boolean inParking = false;
 
-    public Car() {}
+    public Car() {
+        this.inParking = false;
+    }
 
     public Car(String plate, String make, String model, String color, LocalDateTime entryTime) {
         this.plate = plate;
@@ -55,6 +59,10 @@ public class Car {
     public LocalDateTime getExitTime() { return exitTime; }
 
     public void setExitTime(LocalDateTime exitTime) { this.exitTime = exitTime; }
+
+    public Boolean getInParking() { return inParking; }
+
+    public void setInParking(Boolean inParking) { this.inParking = inParking; }
     
     @Override
     public boolean equals(Object obj) {

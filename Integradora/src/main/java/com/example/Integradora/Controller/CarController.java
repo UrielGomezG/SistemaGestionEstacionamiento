@@ -35,11 +35,38 @@ public class CarController {
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             response.put("success", false);
-            response.put("message", "Error al obtener autos: " + e.getMessage());
+            response.put("message", "Error al obtener autos ");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
     
+    /**
+     * Obtiene un auto por su placa
+     * GET /cars/plate/{plate}
+     */
+    @GetMapping("/plate/{plate}")
+    public ResponseEntity<?> getCarByPlate(@PathVariable String plate) {
+        try {
+            Optional<Car> car = carService.findByPlate(plate);
+            if (car.isPresent()) {
+                Map<String, Object> response = new HashMap<>();
+                response.put("success", true);
+                response.put("car", car.get());
+                return ResponseEntity.ok(response);
+            } else {
+                Map<String, Object> response = new HashMap<>();
+                response.put("success", false);
+                response.put("message", "Auto con placa " + plate + " no encontrado");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+            }
+        } catch (Exception e) {
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", false);
+            response.put("message", "Error al buscar auto: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
+
     /**
      * Obtiene un auto por su ID
      * GET /cars/id/{id}
@@ -83,7 +110,7 @@ public class CarController {
         } catch (Exception e) {
             Map<String, Object> response = new HashMap<>();
             response.put("success", false);
-            response.put("message", "Error al crear auto: " + e.getMessage());
+            response.put("message", "Error al crear auto ");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
@@ -112,7 +139,7 @@ public class CarController {
         } catch (Exception e) {
             Map<String, Object> response = new HashMap<>();
             response.put("success", false);
-            response.put("message", "Error al actualizar auto: " + e.getMessage());
+            response.put("message", "Error al actualizar auto");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
@@ -139,7 +166,7 @@ public class CarController {
         } catch (Exception e) {
             Map<String, Object> response = new HashMap<>();
             response.put("success", false);
-            response.put("message", "Error al eliminar auto: " + e.getMessage());
+            response.put("message", "Error al eliminar auto");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }

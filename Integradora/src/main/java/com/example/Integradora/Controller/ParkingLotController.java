@@ -44,12 +44,12 @@ public class ParkingLotController {
         } catch (IllegalStateException e) {
             Map<String, Object> response = new HashMap<>();
             response.put("success", false);
-            response.put("message", e.getMessage());
+            response.put("message", "Error Interno del servidor");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         } catch (Exception e) {
             Map<String, Object> response = new HashMap<>();
             response.put("success", false);
-            response.put("message", "Error al registrar entrada: " + e.getMessage());
+            response.put("message", "Error al registrar entrada");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
@@ -72,12 +72,12 @@ public class ParkingLotController {
         } catch (IllegalStateException e) {
             Map<String, Object> response = new HashMap<>();
             response.put("success", false);
-            response.put("message", e.getMessage());
+            response.put("message", "Error Interno del servidor");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         } catch (Exception e) {
             Map<String, Object> response = new HashMap<>();
             response.put("success", false);
-            response.put("message", "Error al registrar salida: " + e.getMessage());
+            response.put("message", "Error al registrar salida");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
@@ -107,7 +107,7 @@ public class ParkingLotController {
         } catch (Exception e) {
             Map<String, Object> response = new HashMap<>();
             response.put("success", false);
-            response.put("message", "Error al buscar auto: " + e.getMessage());
+            response.put("message", "Error al buscar auto");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
@@ -130,7 +130,7 @@ public class ParkingLotController {
         } catch (Exception e) {
             Map<String, Object> response = new HashMap<>();
             response.put("success", false);
-            response.put("message", "Error al obtener autos: " + e.getMessage());
+            response.put("message", "Error al obtener autos ");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
@@ -153,7 +153,7 @@ public class ParkingLotController {
         } catch (Exception e) {
             Map<String, Object> response = new HashMap<>();
             response.put("success", false);
-            response.put("message", "Error al obtener autos en espera: " + e.getMessage());
+            response.put("message", "Error al obtener autos en espera");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
@@ -177,7 +177,7 @@ public class ParkingLotController {
         } catch (Exception e) {
             Map<String, Object> response = new HashMap<>();
             response.put("success", false);
-            response.put("message", "Error al obtener historial: " + e.getMessage());
+            response.put("message", "Error al obtener historial");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
@@ -198,7 +198,7 @@ public class ParkingLotController {
         } catch (Exception e) {
             Map<String, Object> response = new HashMap<>();
             response.put("success", false);
-            response.put("message", "Error al obtener estadísticas: " + e.getMessage());
+            response.put("message", "Error al obtener estadísticas");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }

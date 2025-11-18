@@ -1,9 +1,11 @@
 package com.example.Integradora.Service;
 
 import com.example.Integradora.Model.Car;
+import com.example.Integradora.Model.Ticket;
 import com.example.Integradora.Structures.ParkingLotList;
 import com.example.Integradora.Structures.QueueWaiting;
 import com.example.Integradora.Structures.StackHistory;
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +27,7 @@ public class ParkingLotService {
     private final StackHistory<Car> exitHistory;
     
     private static final int PARKING_CAPACITY = 10;
+    private static final double HOURLY_RATE = 25.0;
     
     public ParkingLotService() {
         this.parkingLot = new ParkingLotList<>(PARKING_CAPACITY);
@@ -32,20 +35,44 @@ public class ParkingLotService {
         this.exitHistory = new StackHistory<>();
     }
 
+    @PostConstruct
+    public void initializeParkingState() {
+        List<Car> carsInParking = carService.findCarsInParking();
+        if (carsInParking == null || carsInParking.isEmpty()) {
+            return;
+        }
+
+        for (Car car : carsInParking) {
+            if (car == null) {
+                continue;
+            }
+            if (parkingLot.add(car) == null) {
+                waitingQueue.enqueue(car);
+            }
+        }
+    }
+
     public Car registerEntry(Car car) {
+        // Validar que el auto no esté ya en el estacionamiento
         if (parkingLot.getData(car) != null) {
             throw new IllegalStateException("El auto con placa " + car.getPlate() + " ya está en el estacionamiento");
         }
         
+        Car existingCar = null;
         if (carService.existsByPlate(car.getPlate())) {
-            Car existingCar = carService.findByPlate(car.getPlate()).orElse(null);
-            if (existingCar != null && existingCar.getExitTime() == null) {
-                throw new IllegalStateException("El auto con placa " + car.getPlate() + " ya está registrado y no ha salido");
+            existingCar = carService.findByPlate(car.getPlate()).orElse(null);
+            if (existingCar != null && existingCar.getInParking() != null && existingCar.getInParking()) {
+                throw new IllegalStateException("El auto con placa " + car.getPlate() + " ya está en el estacionamiento");
             }
+        }
+        
+        if (existingCar != null) {
+            car = existingCar;
         }
         
         car.setEntryTime(LocalDateTime.now());
         car.setExitTime(null);
+        car.setInParking(true);
         
         car = carService.save(car);
         
@@ -67,18 +94,20 @@ public class ParkingLotService {
         }
         
         carToExit.setExitTime(LocalDateTime.now());
+        carToExit.setInParking(false);
         
         Car removedCar = parkingLot.remove(carToExit);
         
         if (removedCar != null) {
             carToExit = carService.update(carToExit);
-            
+            createTicketForExit(carToExit);
             exitHistory.push(carToExit);
             
             if (!waitingQueue.isEmpty()) {
                 Car nextCar = waitingQueue.dequeue();
                 if (nextCar != null) {
                     nextCar.setEntryTime(LocalDateTime.now());
+                    nextCar.setInParking(true);
                     nextCar = carService.update(nextCar);
                     parkingLot.add(nextCar);
                 }
@@ -172,5 +201,27 @@ public class ParkingLotService {
     
     public StackHistory<Car> getExitHistory() {
         return exitHistory;
+    }
+
+    private void createTicketForExit(Car car) {
+        if (car.getEntryTime() == null || car.getExitTime() == null) {
+            return;
+        }
+
+        Double total = calculateParkingFee(car.getEntryTime(), car.getExitTime());
+
+        Ticket ticket = new Ticket();
+        ticket.setPlate(car.getPlate());
+        ticket.setEntryTime(car.getEntryTime());
+        ticket.setExitTime(car.getExitTime());
+        ticket.setTotal(total);
+
+        ticketService.save(ticket);
+    }
+
+    private Double calculateParkingFee(LocalDateTime entryTime, LocalDateTime exitTime) {
+        long minutes = Math.max(1, java.time.Duration.between(entryTime, exitTime).toMinutes());
+        double hoursRoundedUp = Math.ceil(minutes / 60.0);
+        return hoursRoundedUp * HOURLY_RATE;
     }
 }

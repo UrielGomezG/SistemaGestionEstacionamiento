@@ -2,122 +2,358 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Sistema de Estacionamiento</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Gestión de Estacionamiento</title>
     <link rel="stylesheet" href="/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-<h1>Sistema de Estacionamiento</h1>
+<nav class="sidebar">
+    <ul>
+        <li>
+            <span class="logo">S G E</span>
+            <button onclick="toggleSidebar()" class="toggle-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed">
+                    <path d="m313-480 155 156q11 11 11.5 27.5T468-268q-11 11-28 11t-28-11L228-452q-6-6-8.5-13t-2.5-15q0-8 2.5-15t8.5-13l184-184q11-11 27.5-11.5T468-692q11 11 11 28t-11 28L313-480Zm264 0 155 156q11 11 11.5 27.5T732-268q-11 11-28 11t-28-11L492-452q-6-6-8.5-13t-2.5-15q0-8 2.5-15t8.5-13l184-184q11-11 27.5-11.5T732-692q11 11 11 28t-11 28L577-480Z"/>
+                </svg>
+            </button>
+        </li>
+        <li>
+            <a href="#" onclick="showSection('parking', event); return false;">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed">
+                    <path d="M240-200h120v-200q0-17 11.5-28.5T400-440h160q17 0 28.5 11.5T600-400v200h120v-360L480-740 240-560v360Zm-80 0v-360q0-19 8.5-36t23.5-28l240-180q21-16 48-16t48 16l240 180q15 11 23.5 28t8.5 36v360q0 33-23.5 56.5T720-120H560q-17 0-28.5-11.5T520-160v-200h-80v200q0 17-11.5 28.5T400-120H240q-33 0-56.5-23.5T160-200Zm320-270Z"/>
+                </svg>
+                <span>Estacionamiento</span>
+            </a>
+        </li>
+        <li>
+            <a href="#" onclick="showSection('cars', event); return false;">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed">
+                    <path d="M240-80v-300h-80v-280q0-33 23.5-56.5T240-740h480q33 0 56.5 23.5T800-660v280h-80v300h-80v-240H320v240h-80Zm80-320h320v-240H320v240Zm-40-80v200h400v-200H280Zm520 160v-320H160v320h-80v-400q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v400h-80Z"/>
+                </svg>
+                <span>Autos</span>
+            </a>
+        </li>
+        <li>
+            <a href="#" onclick="showSection('tickets', event); return false;">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed">
+                    <path d="M320-240h320v-80H320v80Zm0-160h320v-80H320v80ZM240-80q-33 0-56.5-23.5T160-160v-640q0-33 23.5-56.5T240-880h320l240 240v480q0 33-23.5 56.5T720-80H240Zm280-520v-200H240v640h480v-440H520Z"/>
+                </svg>
+                <span>Tickets</span>
+            </a>
+        </li>
+    </ul>
+</nav>
 
-<div class="section">
-    <h2>Registrar Entrada</h2>
-    <input type="text" id="plateEntry" placeholder="Placa">
-    <input type="text" id="makeEntry" placeholder="Marca">
-    <input type="text" id="modelEntry" placeholder="Modelo">
-    <input type="text" id="colorEntry" placeholder="Color">
-    <button onclick="registerEntry()">Registrar Entrada</button>
-    <p id="messageEntry"></p>
+<main class="main-content">
+    <!-- Sección Estacionamiento -->
+    <section id="parking-section" class="content-section active">
+        <div class="section-header">
+            <div>
+                <h1>Estacionamiento</h1>
+                <p>Gestiona las entradas y salidas de vehículos</p>
+            </div>
+            <button class="btn btn-primary" onclick="openParkingModal()">
+                <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="currentColor">
+                    <path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"/>
+                </svg>
+                Registrar Entrada
+            </button>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value" id="occupied-spots">0</div>
+                <div class="stat-label">Ocupados</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="available-spots">10</div>
+                <div class="stat-label">Disponibles</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="waiting-count">0</div>
+                <div class="stat-label">En Espera</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="total-exits">0</div>
+                <div class="stat-label">Total Salidas</div>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <div class="table-header">
+                <div class="search-bar">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="currentColor">
+                        <path d="M784-120 532-372q-30 24-69 38t-83 14q-109 0-184.5-75.5T120-580q0-109 75.5-184.5T380-840q109 0 184.5 75.5T640-580q0 44-14 83t-38 69l252 252-56 56ZM380-400q75 0 127.5-52.5T560-580q0-75-52.5-127.5T380-760q-75 0-127.5 52.5T200-580q0 75 52.5 127.5T380-400Z"/>
+                    </svg>
+                    <input type="text" id="parking-search" placeholder="Buscar por placa..." onkeyup="filterParkingTable()">
+                </div>
+                <button class="btn btn-secondary" onclick="loadParkingData()">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="currentColor">
+                        <path d="M480-160q-134 0-227-93t-93-227q0-134 93-227t227-93q69 0 132 28.5T720-690v-110h80v280H520v-80h110q-32-56-87.5-88T480-600q-100 0-170 70t-70 170q0 100 70 170t170 70q77 0 139-44t87-116h84q-28 106-114 173t-196 67Z"/>
+                    </svg>
+                    Actualizar
+                </button>
+            </div>
+            <table class="data-table">
+                <thead>
+                <tr>
+                    <th>PLACA</th>
+                    <th>MARCA</th>
+                    <th>MODELO</th>
+                    <th>COLOR</th>
+                    <th>HORA ENTRADA</th>
+                    <th>ACCIONES</th>
+                </tr>
+                </thead>
+                <tbody id="parking-table-body">
+                <tr>
+                    <td colspan="6" class="empty-state">Cargando datos...</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- Sección Autos -->
+    <section id="cars-section" class="content-section">
+        <div class="section-header">
+            <div>
+                <h1>Autos</h1>
+                <p>Gestiona el registro de vehículos del sistema</p>
+            </div>
+            <button class="btn btn-primary" onclick="openCarModal()">
+                <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="currentColor">
+                    <path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"/>
+                </svg>
+                Nuevo Auto
+            </button>
+        </div>
+
+        <div class="table-container">
+            <div class="table-header">
+                <div class="search-bar">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="currentColor">
+                        <path d="M784-120 532-372q-30 24-69 38t-83 14q-109 0-184.5-75.5T120-580q0-109 75.5-184.5T380-840q109 0 184.5 75.5T640-580q0 44-14 83t-38 69l252 252-56 56ZM380-400q75 0 127.5-52.5T560-580q0-75-52.5-127.5T380-760q-75 0-127.5 52.5T200-580q0 75 52.5 127.5T380-400Z"/>
+                    </svg>
+                    <input type="text" id="cars-search" placeholder="Buscar por placa, marca o modelo..." onkeyup="filterCarsTable()">
+                </div>
+            </div>
+            <table class="data-table">
+                <thead>
+                <tr>
+                    <th>PLACA</th>
+                    <th>MARCA</th>
+                    <th>MODELO</th>
+                    <th>COLOR</th>
+                    <th>HORA ENTRADA</th>
+                    <th>HORA SALIDA</th>
+                    <th>ACCIONES</th>
+                </tr>
+                </thead>
+                <tbody id="cars-table-body">
+                <tr>
+                    <td colspan="7" class="empty-state">Cargando datos...</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- Sección Tickets -->
+    <section id="tickets-section" class="content-section">
+        <div class="section-header">
+            <div>
+                <h1>Tickets</h1>
+                <p>Gestiona los tickets de estacionamiento</p>
+            </div>
+            <button class="btn btn-primary" onclick="openTicketModal()">
+                <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="currentColor">
+                    <path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"/>
+                </svg>
+                Nuevo Ticket
+            </button>
+        </div>
+
+        <div class="table-container">
+            <div class="table-header">
+                <div class="search-bar">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="currentColor">
+                        <path d="M784-120 532-372q-30 24-69 38t-83 14q-109 0-184.5-75.5T120-580q0-109 75.5-184.5T380-840q109 0 184.5 75.5T640-580q0 44-14 83t-38 69l252 252-56 56ZM380-400q75 0 127.5-52.5T560-580q0-75-52.5-127.5T380-760q-75 0-127.5 52.5T200-580q0 75 52.5 127.5T380-400Z"/>
+                    </svg>
+                    <input type="text" id="tickets-search" placeholder="Buscar por placa..." onkeyup="filterTicketsTable()">
+                </div>
+            </div>
+            <table class="data-table">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>PLACA</th>
+                    <th>HORA ENTRADA</th>
+                    <th>HORA SALIDA</th>
+                    <th>TOTAL</th>
+                    <th>ACCIONES</th>
+                </tr>
+                </thead>
+                <tbody id="tickets-table-body">
+                <tr>
+                    <td colspan="6" class="empty-state">Cargando datos...</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+</main>
+
+<!-- Modal para Estacionamiento -->
+<div id="parking-modal" class="modal">
+    <div class="modal-content" style="max-width: 700px;">
+        <div class="modal-header">
+            <h2>Registrar Entrada de Vehículo</h2>
+            <button class="close-btn" onclick="closeParkingModal()">&times;</button>
+        </div>
+        <div style="padding: var(--spacing-xl);">
+            <div class="form-group">
+                <label for="parking-search-plate">Buscar por placa</label>
+                <input type="text" id="parking-search-plate" placeholder="Ingresa la placa para buscar..." onkeyup="filterParkingCars()">
+            </div>
+
+            <div id="parking-cars-list" class="cars-list-container">
+                <div class="empty-state">Cargando vehículos...</div>
+            </div>
+
+            <div style="margin-top: var(--spacing-xl); padding-top: var(--spacing-xl); border-top: 1px solid var(--line-clr);">
+                <button type="button" class="btn btn-secondary" onclick="showNewCarForm()" style="width: 100%; margin-bottom: var(--spacing-md);">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="currentColor">
+                        <path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"/>
+                    </svg>
+                    Registrar Nuevo Vehículo
+                </button>
+            </div>
+
+            <div id="new-car-form" style="display: none;">
+                <h3 style="margin-bottom: var(--spacing-lg); font-size: 16px;">Datos del Nuevo Vehículo</h3>
+                <form id="parking-form" onsubmit="saveParkingEntry(event)">
+                    <div class="form-group">
+                        <label for="parking-plate">Placa *</label>
+                        <input type="text" id="parking-plate" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="parking-make">Marca *</label>
+                        <input type="text" id="parking-make" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="parking-model">Modelo *</label>
+                        <input type="text" id="parking-model" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="parking-color">Color *</label>
+                        <input type="text" id="parking-color" required>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" onclick="hideNewCarForm()">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Registrar Entrada</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="modal-footer" id="parking-modal-footer" style="margin-top: var(--spacing-xl);">
+                <button type="button" class="btn btn-secondary" onclick="closeParkingModal()">Cerrar</button>
+            </div>
+        </div>
+    </div>
 </div>
 
-<div class="section">
-    <h2>Registrar Salida</h2>
-    <input type="text" id="plateExit" placeholder="Placa">
-    <button onclick="registerExit()">Registrar Salida</button>
-    <p id="messageExit"></p>
+<!-- Modal para Autos -->
+<div id="car-modal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 id="car-modal-title">Nuevo Auto</h2>
+            <button class="close-btn" onclick="closeCarModal()">&times;</button>
+        </div>
+        <form id="car-form" onsubmit="saveCar(event)">
+            <input type="hidden" id="car-id">
+            <div class="form-group">
+                <label for="car-plate">Placa *</label>
+                <input type="text" id="car-plate" required>
+            </div>
+            <div class="form-group">
+                <label for="car-make">Marca *</label>
+                <input type="text" id="car-make" required>
+            </div>
+            <div class="form-group">
+                <label for="car-model">Modelo *</label>
+                <input type="text" id="car-model" required>
+            </div>
+            <div class="form-group">
+                <label for="car-color">Color *</label>
+                <input type="text" id="car-color" required>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeCarModal()">Cancelar</button>
+                <button type="submit" class="btn btn-primary">Guardar</button>
+            </div>
+        </form>
+    </div>
 </div>
 
-<div class="section">
-    <h2>Estado del Estacionamiento</h2>
-    <button onclick="loadParking()">Actualizar Estado</button>
-
-    <h3>Autos dentro del estacionamiento</h3>
-    <ul id="parkingList"></ul>
-
-    <h3>Autos en cola de espera</h3>
-    <ul id="waitingList"></ul>
-
-    <h3>Historial de autos salidos (LIFO)</h3>
-    <ul id="historyList"></ul>
+<!-- Modal para Tickets -->
+<div id="ticket-modal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 id="ticket-modal-title">Nuevo Ticket</h2>
+            <button class="close-btn" onclick="closeTicketModal()">&times;</button>
+        </div>
+        <form id="ticket-form" onsubmit="saveTicket(event)">
+            <input type="hidden" id="ticket-id">
+            <div class="form-group">
+                <label for="ticket-plate">Placa *</label>
+                <input type="text" id="ticket-plate" required>
+            </div>
+            <div class="form-group">
+                <label for="ticket-entry-time">Hora Entrada *</label>
+                <input type="datetime-local" id="ticket-entry-time" required>
+            </div>
+            <div class="form-group">
+                <label for="ticket-exit-time">Hora Salida</label>
+                <input type="datetime-local" id="ticket-exit-time">
+            </div>
+            <div class="form-group">
+                <label for="ticket-total">Total *</label>
+                <input type="number" id="ticket-total" step="0.01" required>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeTicketModal()">Cancelar</button>
+                <button type="submit" class="btn btn-primary">Guardar</button>
+            </div>
+        </form>
+    </div>
 </div>
 
-<script>
-    const baseURL = "http://localhost:8080";
+<!-- Modal de Confirmación -->
+<div id="confirm-modal" class="modal">
+    <div class="modal-content" style="max-width: 400px;">
+        <div class="modal-header">
+            <h2>Confirmar Acción</h2>
+        </div>
+        <div style="padding: var(--spacing-xl);">
+            <p id="confirm-message" style="margin-bottom: var(--spacing-xl); font-size: 14px; color: var(--text-clr);"></p>
+            <div class="modal-footer" style="margin-top: var(--spacing-xl); padding-top: 0; border-top: none;">
+                <button type="button" class="btn btn-secondary" id="confirm-cancel-btn">Cancelar</button>
+                <button type="button" class="btn btn-danger" id="confirm-btn">Confirmar</button>
+            </div>
+        </div>
+    </div>
+</div>
 
-    async function registerEntry() {
-        const plate = document.getElementById("plateEntry").value;
-        const make = document.getElementById("makeEntry").value;
-        const model = document.getElementById("modelEntry").value;
-        const color = document.getElementById("colorEntry").value;
+<!-- Toast Notification -->
+<div id="toast" class="toast"></div>
 
-        const body = { plate, make, model, color };
-
-        try {
-            const res = await fetch(`${baseURL}/cars/entry`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(body)
-            });
-            const data = await res.json();
-            document.getElementById("messageEntry").textContent = data.message;
-            document.getElementById("messageEntry").className = data.success ? "success" : "error";
-            loadParking();
-        } catch (err) {
-            document.getElementById("messageEntry").textContent = "Error de conexión";
-            document.getElementById("messageEntry").className = "error";
-        }
-    }
-
-    async function registerExit() {
-        const plate = document.getElementById("plateExit").value;
-        try {
-            const res = await fetch(`${baseURL}/cars/exit/${plate}`, { method: "POST" });
-            const data = await res.json();
-            document.getElementById("messageExit").textContent = data.message;
-            document.getElementById("messageExit").className = data.success ? "success" : "error";
-            loadParking();
-        } catch (err) {
-            document.getElementById("messageExit").textContent = "Error de conexión";
-            document.getElementById("messageExit").className = "error";
-        }
-    }
-
-    async function loadParking() {
-        try {
-            const parkingRes = await fetch(`${baseURL}/cars/parking`);
-            const parkingData = await parkingRes.json();
-            const parkingList = document.getElementById("parkingList");
-            parkingList.innerHTML = "";
-            parkingData.cars.forEach(car => {
-                const li = document.createElement("li");
-                li.textContent = `${car.plate} - ${car.make} ${car.model} (${car.color})`;
-                parkingList.appendChild(li);
-            });
-
-            const waitingRes = await fetch(`${baseURL}/cars/waiting`);
-            const waitingData = await waitingRes.json();
-            const waitingList = document.getElementById("waitingList");
-            waitingList.innerHTML = "";
-            waitingData.cars.forEach(car => {
-                const li = document.createElement("li");
-                li.textContent = `${car.plate} - ${car.make} ${car.model} (${car.color})`;
-                waitingList.appendChild(li);
-            });
-
-            const historyRes = await fetch(`${baseURL}/cars/history`);
-            const historyData = await historyRes.json();
-            const historyList = document.getElementById("historyList");
-            historyList.innerHTML = "";
-            historyData.history.forEach(car => {
-                const li = document.createElement("li");
-                li.textContent = `${car.plate} - ${car.make} ${car.model} (${car.color})`;
-                historyList.appendChild(li);
-            });
-
-        } catch (err) {
-            console.log("Error al cargar datos:", err);
-        }
-    }
-
-    window.onload = loadParking;
-</script>
+<script src="/js/config.js"></script>
+<script src="/js/utils.js"></script>
+<script src="/js/parking.js"></script>
+<script src="/js/cars.js"></script>
+<script src="/js/tickets.js"></script>
+<script src="/js/main.js"></script>
 </body>
 </html>

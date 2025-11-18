@@ -29,6 +29,10 @@ public class CarService {
         return carRepository.findAll();
     }
 
+    public List<Car> findCarsInParking() {
+        return carRepository.findByInParkingTrue();
+    }
+
     public Car update(Car car) {
         return carRepository.save(car);
     }
