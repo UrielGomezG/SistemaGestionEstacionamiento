@@ -5,6 +5,13 @@ import com.example.Integradora.Model.Node;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Estructura de datos Pila (Stack) implementada manualmente.
+ * Sigue el principio LIFO (Last In, First Out).
+ * Se utiliza para registrar el historial de salidas del estacionamiento.
+ * 
+ * @param <T> Tipo de dato a almacenar
+ */
 public class StackHistory<T> {
     private Node<T> top;
     private int size;
@@ -22,7 +29,8 @@ public class StackHistory<T> {
     }
 
     public T pop() {
-        if (isEmpty()) return null;
+        if (isEmpty())
+            return null;
         T data = top.getData();
         top = top.getNext();
         size--;
@@ -30,7 +38,8 @@ public class StackHistory<T> {
     }
 
     public T peek() {
-        if (isEmpty()) return null;
+        if (isEmpty())
+            return null;
         return top.getData();
     }
 

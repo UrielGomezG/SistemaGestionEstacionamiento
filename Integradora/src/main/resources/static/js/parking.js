@@ -1,4 +1,4 @@
-async function loadParkingData() {
+async function loadParkingData(sort = false) {
     try {
         const statsData = await fetchWithErrorHandling(`${API_BASE_URL}/cars/stats`);
         if (statsData.success) {
@@ -9,7 +9,8 @@ async function loadParkingData() {
             document.getElementById('total-exits').textContent = stats.exitedCars || 0;
         }
 
-        const parkingResponse = await fetchWithErrorHandling(`${API_BASE_URL}/cars/parking`);
+        const endpoint = sort ? `${API_BASE_URL}/cars/parking/sorted` : `${API_BASE_URL}/cars/parking`;
+        const parkingResponse = await fetchWithErrorHandling(endpoint);
         if (parkingResponse.success) {
             AppState.parkingData = parkingResponse.cars || [];
             renderParkingTable(AppState.parkingData);

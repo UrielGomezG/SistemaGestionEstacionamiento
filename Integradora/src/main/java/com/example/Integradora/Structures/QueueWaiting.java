@@ -2,6 +2,14 @@ package com.example.Integradora.Structures;
 
 import com.example.Integradora.Model.Node;
 
+/**
+ * Estructura de datos Cola (Queue) implementada manualmente.
+ * Sigue el principio FIFO (First In, First Out).
+ * Se utiliza para gestionar los autos en espera cuando el estacionamiento está
+ * lleno.
+ * 
+ * @param <T> Tipo de dato a almacenar
+ */
 public class QueueWaiting<T> {
     private Node<T> head;
     private Node<T> tail;
@@ -26,16 +34,22 @@ public class QueueWaiting<T> {
     }
 
     public T dequeue() {
-        if (isEmpty()) { return null; }
+        if (isEmpty()) {
+            return null;
+        }
         T value = this.head.getData();
         head = head.getNext();
         size--;
-        if(isEmpty()) { tail = null; }
+        if (isEmpty()) {
+            tail = null;
+        }
         return value;
     }
 
     public T peek() {
-        if (isEmpty()) { return null; }
+        if (isEmpty()) {
+            return null;
+        }
         return head.getData();
     }
 
@@ -48,11 +62,11 @@ public class QueueWaiting<T> {
     public boolean isEmpty() {
         return head == null;
     }
-    
+
     public int getSize() {
         return size;
     }
-    
+
     public Node<T> getHead() {
         return head;
     }

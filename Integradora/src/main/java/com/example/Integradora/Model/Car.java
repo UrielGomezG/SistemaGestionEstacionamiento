@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "cars")
-public class Car {
+public class Car implements Comparable<Car> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,48 +32,90 @@ public class Car {
         this.entryTime = entryTime;
     }
 
-    public Long getId() { return id; }
+    public Long getId() {
+        return id;
+    }
 
-    public void setId(Long id) { this.id = id; }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    public String getPlate() { return plate; }
+    public String getPlate() {
+        return plate;
+    }
 
-    public void setPlate(String plate) { this.plate = plate; }
+    public void setPlate(String plate) {
+        this.plate = plate;
+    }
 
-    public String getMake() { return make; }
+    public String getMake() {
+        return make;
+    }
 
-    public void setMake(String make) { this.make = make; }
+    public void setMake(String make) {
+        this.make = make;
+    }
 
-    public String getModel() { return model; }
+    public String getModel() {
+        return model;
+    }
 
-    public void setModel(String model) { this.model = model; }
+    public void setModel(String model) {
+        this.model = model;
+    }
 
-    public String getColor() { return color; }
+    public String getColor() {
+        return color;
+    }
 
-    public void setColor(String color) { this.color = color; }
+    public void setColor(String color) {
+        this.color = color;
+    }
 
-    public LocalDateTime getEntryTime() { return entryTime; }
+    public LocalDateTime getEntryTime() {
+        return entryTime;
+    }
 
-    public void setEntryTime(LocalDateTime entryTime) { this.entryTime = entryTime; }
+    public void setEntryTime(LocalDateTime entryTime) {
+        this.entryTime = entryTime;
+    }
 
-    public LocalDateTime getExitTime() { return exitTime; }
+    public LocalDateTime getExitTime() {
+        return exitTime;
+    }
 
-    public void setExitTime(LocalDateTime exitTime) { this.exitTime = exitTime; }
+    public void setExitTime(LocalDateTime exitTime) {
+        this.exitTime = exitTime;
+    }
 
-    public Boolean getInParking() { return inParking; }
+    public Boolean getInParking() {
+        return inParking;
+    }
 
-    public void setInParking(Boolean inParking) { this.inParking = inParking; }
-    
+    public void setInParking(Boolean inParking) {
+        this.inParking = inParking;
+    }
+
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null || getClass() != obj.getClass()) return false;
+        if (this == obj)
+            return true;
+        if (obj == null || getClass() != obj.getClass())
+            return false;
         Car car = (Car) obj;
         return plate != null && plate.equals(car.plate);
     }
-    
+
     @Override
     public int hashCode() {
         return plate != null ? plate.hashCode() : 0;
+    }
+
+    @Override
+    public int compareTo(Car other) {
+        if (this.plate == null || other.plate == null) {
+            return 0;
+        }
+        return this.plate.compareTo(other.plate);
     }
 }

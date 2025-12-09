@@ -4,17 +4,18 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table (name = "Tickets")
-public class Ticket {
+@Table(name = "Tickets")
+public class Ticket implements Comparable<Ticket> {
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String plate;
     private LocalDateTime entryTime;
     private LocalDateTime exitTime;
     private Double total;
 
-    public Ticket() {}
+    public Ticket() {
+    }
 
     public Ticket(String plate, LocalDateTime entryTime, LocalDateTime exitTime, Double total) {
         this.plate = plate;
@@ -61,5 +62,13 @@ public class Ticket {
 
     public void setTotal(Double total) {
         this.total = total;
+    }
+
+    @Override
+    public int compareTo(Ticket other) {
+        if (this.total == null || other.total == null) {
+            return 0;
+        }
+        return this.total.compareTo(other.total);
     }
 }

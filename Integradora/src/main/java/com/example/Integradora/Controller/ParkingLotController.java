@@ -18,6 +18,7 @@ public class ParkingLotController {
 
     @Autowired
     private ParkingLotService parkingLotService;
+
     /**
      * Registra la entrada de un auto al estacionamiento
      * POST /cars/entry
@@ -136,6 +137,27 @@ public class ParkingLotController {
     }
 
     /**
+     * Obtiene todos los autos ordenados por placa
+     * GET /cars/parking/sorted
+     */
+    @GetMapping("/parking/sorted")
+    public ResponseEntity<?> getSortedCarsInParking() {
+        try {
+            List<Car> cars = parkingLotService.getSortedCarsInParking();
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", true);
+            response.put("cars", cars);
+            response.put("count", cars.size());
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", false);
+            response.put("message", "Error al obtener autos ordenados");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
+
+    /**
      * Obtiene los autos en la cola de espera
      * GET /cars/waiting
      */
@@ -203,4 +225,3 @@ public class ParkingLotController {
         }
     }
 }
-
